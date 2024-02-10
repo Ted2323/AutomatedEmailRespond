@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form with Google Generative AI</title>
+</head>
+<body>
+  <!-- Form for collecting user input -->
+  <form id="myForm">
+    <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+    <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Output area to display generated text -->
+  <div id="output"></div>
+
+  <!-- Script to integrate with Google Generative AI -->
+  <script type="module">
+    // Import GoogleGenerativeAI from the module
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    // Define your API key
+    const API_KEY = "AIzaSyAIuZclU5I7tHhY8WEWM8mGfAi8fRPgiKo";
+
+    // Initialize GoogleGenerativeAI with your API key
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    // Define a function to run when the page loads
+    async function run() {
+      // Create a model using the gemini-pro model
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+      // Add an event listener to the form for form submission
+      const form = document.getElementById("myForm");
+      form.addEventListener("submit", async function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        // Get values from form inputs
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+
+        // Define prompt for generating text
+        const prompt = `You are from Rangsit University Registration office. Give me automated email response for registration for ${firstName} ${lastName}.`;
+
+        // Generate content using the prompt
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = await response.text();
+        console.log(text); // Log generated text to console
+
+        // Display generated text in the output area
+        const outputElement = document.getElementById("output");
+        outputElement.textContent = text;
+      });
+    }
+
+    // Run the function when the page loads
+    run();
+  </script>
+</body>
+</html>
